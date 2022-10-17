@@ -6,6 +6,8 @@ R YAML package
 
 **INSTALL AT YOUR OWN RISK**
 
+**MOSTLY BROKEN CODE**
+
 
 [![](https://cranlogs.r-pkg.org/badges/yaml12)](https://cran.r-project.org/package=yaml12)
 
@@ -81,7 +83,7 @@ sudo yum install libfyaml-devel
 ### Zip/Tarball
 
 1. Download the appropriate zip file or tar.gz file from the
-[Github releases](https://github.com/vbiostat/r-yaml/releases) page.
+[Github releases](https://github.com/vubiostat/yaml12/releases) page.
 2. Run `R CMD INSTALL <filename>`
 
 ### Git (via devtools)
@@ -90,7 +92,7 @@ sudo yum install libfyaml-devel
 2. In R, run the following:
     ```R
     library(devtools)
-    install_github('vbiostat/r-yaml')
+    install_github('vubiostat/yaml12')
     ```
 
 ## Usage
