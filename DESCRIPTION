@@ -1,0 +1,13 @@
+Package: yaml12
+Type: Package
+Title: Methods to Convert R Data to YAML1.2 and Back Again
+Date: 2022-10-17
+Version: 0.0.1
+Suggests: RUnit
+Author: Shawn P Garbett [aut]
+Maintainer: Shawn Garbett <shawn.garbett@vumc.org>
+License: MIT + file LICENSE
+Description: Implements the 'libyaml' 'YAML' 1.2 parser and emitter
+  <https://github.com/pantoniou/libfyaml> for R. 
+URL: https://github.com/vubiostat/yaml12/
+BugReports: https://github.com/vubiostat/yaml12/issues

@@ -60,8 +60,23 @@ Data dictionary specification:
 
 ### CRAN
 
-You can install this package directly from CRAN by running (from within R):
-`install.packages('yaml12')`
+Binary package for OS-X or Windows can be installed directly from CRAN:
+
+```
+install.packages('yaml12')
+```
+
+Installation from source on Linux requires `libfyaml`. On Debian or Ubuntu use `libfyaml-dev`:
+
+```
+sudo apt-get install -y libfyaml-dev
+```
+
+On Fedora, CentOS or RHEL use libfyaml-devel:
+
+```
+sudo yum install libfyaml-devel
+```
 
 ### Zip/Tarball
 
