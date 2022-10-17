@@ -519,6 +519,6 @@ test_that("quotes for string",
 
 test_that("no dots at end",
 {
-  result <- yaml::as.yaml(list(eol = "\n", a = 1), line.sep = "\n")
+  result <- yaml12::as.yaml(list(eol = "\n", a = 1), line.sep = "\n")
   expect_equal("eol: |2+\n\na: 1.0\n", result)
 })
