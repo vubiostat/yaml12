@@ -17,7 +17,7 @@ test_that("named list is not returned",
 
 test_that("key conflicts throw errors",
 {
-  expect_error(yaml.load("hey: buddy\nhey: guy"));
+  expect_error(yaml.load("hey: buddy\nhey: guy"))
 })
 
 test_that("named list is returned",
@@ -64,24 +64,16 @@ test_that("named maps are merged without warnings",
   expect_equal("boo", x$baz)
 
   expected <- list(foo = 'bar', quux = 'quux', baz = 'blah')
-  warnings <- captureWarnings({
-    x <- yaml.load("foo: bar\n<<: [{quux: quux}, {foo: doo}, {foo: junk}, {baz: blah}, {baz: boo}]", TRUE)
-  })
+  x <- expect_silent(
+    yaml.load("foo: bar\n<<: [{quux: quux}, {foo: doo}, {foo: junk}, {baz: blah}, {baz: boo}]", TRUE))
   expect_equal(expected, x)
-  expect_equal(0L, length(warnings))
 
-  warnings <- captureWarnings({
-    x <- yaml.load("foo: bar\n<<: {foo: baz}\n<<: {foo: quux}")
-  })
+  x <- expect_silent(yaml.load("foo: bar\n<<: {foo: baz}\n<<: {foo: quux}"))
   expect_equal(1L, length(x))
   expect_equal("bar", x$foo)
-  expect_equal(0L, length(warnings))
 
-  warnings <- captureWarnings({
-    x <- yaml.load("<<: {foo: bar}\nfoo: baz")
-  })
+  x <- expect_silent(yaml.load("<<: {foo: bar}\nfoo: baz"))
   expect_equal(list(foo = 'bar'), x)
-  expect_equal(0L, length(warnings))
 })
 
 test_that("named maps are merged with warnings",
@@ -92,26 +84,28 @@ test_that("named maps are merged with warnings",
   expect_equal("boo", x$baz)
 
   expected <- list(foo = 'bar', quux = 'quux', baz = 'blah')
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("foo: bar\n<<: [{quux: quux}, {foo: doo}, {foo: junk}, {baz: blah}, {baz: boo}]", as.named.list = TRUE, merge.warning = TRUE)
+    expect_equal(expected, x)
   })
-  expect_equal(expected, x)
+  
   expect_equal(c("Duplicate map key ignored during merge: 'foo'",
                  "Duplicate map key ignored during merge: 'foo'",
                  "Duplicate map key ignored during merge: 'baz'"), warnings)
 
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("foo: bar\n<<: {foo: baz}\n<<: {foo: quux}", as.named.list = TRUE, merge.warning = TRUE)
+    expect_equal(1L, length(x))
   })
-  expect_equal(1L, length(x))
   expect_equal("bar", x$foo)
   expect_equal(c("Duplicate map key ignored during merge: 'foo'",
                  "Duplicate map key ignored during merge: 'foo'"), warnings)
 
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("<<: {foo: bar}\nfoo: baz", as.named.list = TRUE, merge.warning = TRUE)
+    expect_equal(list(foo = 'bar'), x)   
   })
-  expect_equal(list(foo = 'bar'), x)
+
   expect_equal(c("Duplicate map key ignored after merge: 'foo'"), warnings)
 })
 
@@ -123,52 +117,50 @@ test_that("unnamed maps are merged without warnings",
   expect_equal("bar", x[[1]])
   expect_equal("boo", x[[2]])
 
-  warnings <- captureWarnings({
-    x <- yaml.load("foo: bar\n<<: [{quux: quux}, {foo: doo}, {baz: boo}]", as.named.list = FALSE)
-  })
+  x <- expect_silent(
+    yaml.load("foo: bar\n<<: [{quux: quux}, {foo: doo}, {baz: boo}]", as.named.list = FALSE)
+  )
   expect_equal(3L, length(x))
   expect_equal(list("foo", "quux", "baz"), attr(x, 'keys'))
   expect_equal("bar", x[[1]])
   expect_equal("quux", x[[2]])
   expect_equal("boo", x[[3]])
-  expect_equal(0L, length(warnings))
 
-  warnings <- captureWarnings({
-    x <- yaml.load("<<: {foo: bar}\nfoo: baz", as.named.list = FALSE)
-  })
+  x <- expect_silent(
+    yaml.load("<<: {foo: bar}\nfoo: baz", as.named.list = FALSE)
+  )
   expect_equal(1L, length(x))
   expect_equal(list("foo"), attr(x, 'keys'))
   expect_equal("bar", x[[1]])
-  expect_equal(0L, length(warnings))
 })
 
 test_that("unnamed maps are merged with warnings",
 {
-  warnings <- captureWarnings({
-    x <- yaml.load("foo: bar\n<<: {baz: boo}", as.named.list = FALSE, merge.warning = TRUE)
-  })
+  x <- expect_silent(
+    yaml.load("foo: bar\n<<: {baz: boo}", as.named.list = FALSE, merge.warning = TRUE)
+  )
   expect_equal(2L, length(x))
   expect_equal(list("foo", "baz"), attr(x, 'keys'))
   expect_equal("bar", x[[1]])
   expect_equal("boo", x[[2]])
-  expect_equal(0L, length(warnings))
 
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("foo: bar\n<<: [{quux: quux}, {foo: doo}, {baz: boo}]", as.named.list = FALSE, merge.warning = TRUE)
+    expect_equal(3L, length(x))
+    expect_equal(list("foo", "quux", "baz"), attr(x, 'keys'))
+    expect_equal("bar", x[[1]])
+    expect_equal("quux", x[[2]])
+    expect_equal("boo", x[[3]])
   })
-  expect_equal(3L, length(x))
-  expect_equal(list("foo", "quux", "baz"), attr(x, 'keys'))
-  expect_equal("bar", x[[1]])
-  expect_equal("quux", x[[2]])
-  expect_equal("boo", x[[3]])
   expect_equal("Duplicate map key ignored during merge: 'foo'", warnings)
 
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("<<: {foo: bar}\nfoo: baz", as.named.list = FALSE, merge.warning = TRUE)
+    expect_equal(1L, length(x))
+    expect_equal(list("foo"), attr(x, 'keys'))
+    expect_equal("bar", x[[1]])
   })
-  expect_equal(1L, length(x))
-  expect_equal(list("foo"), attr(x, 'keys'))
-  expect_equal("bar", x[[1]])
+
   expect_equal(c("Duplicate map key ignored after merge: 'foo'"), warnings)
 })
 
@@ -317,12 +309,13 @@ test_that("str type is converted",
 
 test_that("bad anchors are handled",
 {
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("*blargh")
+    expected <- " yaml.bad-anchor "
+    class(expected) <- " yaml.bad-anchor "
+    expect_equal(expected, x)
   })
-  expected <- " yaml.bad-anchor "
-  class(expected) <- " yaml.bad-anchor "
-  expect_equal(expected, x)
+  
   expect_equal("Unknown anchor: blargh", warnings)
 })
 
@@ -430,10 +423,10 @@ test_that("custom timestamp ymd handler is applied",
 
 test_that("custom merge handler is not applied",
 {
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("foo: &foo\n  bar: 123\n  baz: 456\n\njunk:\n  <<: *foo\n  bah: 789", handlers=list("merge"=function(x) { "argh!" }))
+    expect_equal(list(foo=list(bar=123, baz=456), junk=list(bar=123, baz=456, bah=789)), x)
   })
-  expect_equal(list(foo=list(bar=123, baz=456), junk=list(bar=123, baz=456, bah=789)), x)
   expect_equal("Custom handling for type 'merge' is not allowed; handler ignored", warnings)
 })
 
@@ -524,10 +517,11 @@ test_that("invalid omap causes error",
 
 test_that("expressions are not implicitly converted with warning",
 {
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load("!expr |\n  function() \n  {\n    'hey!'\n  }")
+    expect_equal("function() \n{\n  'hey!'\n}", x)
   })
-  expect_equal("function() \n{\n  'hey!'\n}", x)
+ 
 #  expect_equal("function", class(x))
 #  expect_equal("hey!", x())
   expect_equal("Evaluating R expressions (!expr) requires explicit `eval.expr=TRUE` option (see yaml.load help)", warnings)
@@ -535,12 +529,11 @@ test_that("expressions are not implicitly converted with warning",
 
 test_that("expressions are explicitly converted without warning",
 {
-  warnings <- captureWarnings({
-    x <- yaml.load("!expr |\n  function() \n  {\n    'hey!'\n  }", eval.expr = TRUE)
+  x <- expect_silent({
+    yaml.load("!expr |\n  function() \n  {\n    'hey!'\n  }", eval.expr = TRUE)
   })
   expect_equal("function", class(x))
   expect_equal("hey!", x())
-  expect_equal(0, length(warnings))
 })
 
 test_that("expressions are explicitly not converted",
@@ -569,12 +562,13 @@ test_that("maps are in ordered",
 
 test_that("illegal recursive anchor is handled",
 {
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     x <- yaml.load('&foo {foo: *foo}')
+    expected <- " yaml.bad-anchor "
+    class(expected) <- " yaml.bad-anchor "
+    expect_equal(expected, x$foo)
   })
-  expected <- " yaml.bad-anchor "
-  class(expected) <- " yaml.bad-anchor "
-  expect_equal(expected, x$foo)
+
   expect_equal("Unknown anchor: foo", warnings)
 })
 
@@ -752,20 +746,19 @@ test_that("explicit bool tag for na value",
 test_that("explicit bool tag for invalid value",
 {
   doc <- "!!bool foo"
-  expected <- NA
-  warnings <- captureWarnings({
+  warnings <- capture_warnings({
     result <- yaml.load(doc)
+    expect_equal(result, NA)
   })
-  expect_equal(expected, result)
+
   expect_equal(c("NAs introduced by coercion: foo is not a recognized boolean value"), warnings)
 })
 
 test_that("builtin as handler works",
 {
   x <- "{a: 1, b: 2, c: 3}"
-  warnings <- captureWarnings({
-    results <- yaml.load(x, handlers=list(int=as.double))
-  })
+  results <- expect_silent(
+    yaml.load(x, handlers=list(int=as.double))
+  )
   expect_equal(class(results$a), "numeric")
-  expect_equal(0, length(warnings))
 })
