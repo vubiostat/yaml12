@@ -45,14 +45,15 @@ test_that("reading a complicated document works",
 
 test_that("warns about incomplete last line",
 {
-  filename <- tempfile()
-  cat("foo: 123", file=filename, sep="")
-  foo <- file(filename, 'r')
-  checkWarning(x <- read_yaml(foo))
-  #, readLines.warn=FALSE)
-  close(foo)
-  unlink(filename)
-  expect_equal(123L, x$foo)
+  expect_warning({
+    filename <- tempfile()
+    cat("foo: 123", file=filename, sep="")
+    foo <- file(filename, 'r')
+    x <- read_yaml(foo)
+    close(foo)
+    unlink(filename)
+    expect_equal(123L, x$foo)
+  })
 })
 
 test_that("incomplete last line still loads",
