@@ -132,14 +132,15 @@ This means that you cannot do anything that would result in an invalid YAML
  attr(x[[2]], "tag") <- "!b"
  attr(x[[3]], "tag") <- "!c"
  as.yaml(x)
-}
-\references{
-YAML: http://yaml.org
  
-YAML omap type: http://yaml.org/type/omap.html
 }
 \seealso{
-yaml.load
+Other yaml: 
+\code{\link{read_yaml}()},
+\code{\link{write_yaml}()},
+\code{\link{yaml.load_file}()},
+\code{\link{yaml.load}()}
 }
+\concept{yaml}
 \keyword{data}
 \keyword{manip}

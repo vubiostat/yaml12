@@ -50,14 +50,7 @@
 #'  \code{\link{yaml.load}} via custom handlers, however, if you set an internal
 #'  tag on an incompatible data type (like \dQuote{!seq 1.0}), errors will occur
 #'  when you try to deserialize the document.
-#'
-#' @references 
-#' 
-#' YAML: http://yaml.org
 #'  
-#' YAML omap type: http://yaml.org/type/omap.html
-#'  
-#' @seealso yaml.load
 #' @examples 
 #'  as.yaml(1:10)
 #'  as.yaml(list(foo=1:10, bar=c("test1", "test2")))
@@ -111,6 +104,8 @@
 #'  attr(x[[2]], "tag") <- "!b"
 #'  attr(x[[3]], "tag") <- "!c"
 #'  as.yaml(x)
+#'  
+#' @family yaml
 #' @keywords data manip
 #' @export
 as.yaml <- function(x, line.sep = c("\n", "\r\n", "\r"), indent = 2, omap = FALSE,
